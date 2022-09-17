@@ -1,0 +1,8 @@
+=ybegin part=5 total=10 line=128 size=4682 name=yenc32-raw.bin 
+=ypart begin=2049 end=2560
+
+
+*+,-=n/0123456789:;<=}>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~€‚ƒ„…†‡‰‹‘’“”•–—™› ΅Ά£¤¥¦§
+¨©ª«¬­®―°±²³΄µ¶·ΈΉΊ»Ό½ΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡÒΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώÿ=@=I=J=M !"#
+$%&'()
+=yend size=512 part=5 pcrc32=DBFEA849
