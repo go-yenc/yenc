@@ -42,6 +42,132 @@ func TestDecodeYEnc32(t *testing.T) {
 	}
 }
 
+func TestDecodeNgPost(t *testing.T) {
+	var b bytes.Buffer
+	for i := 1; i <= 10; i++ {
+		f, err := os.Open(fmt.Sprintf("fixture/ngPost-%03d.ntx", i))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		d, err := Decode(f, DecodeWithBufferSize(200))
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		fmt.Printf("%#v\n", d.Header())
+
+		_, err = io.Copy(&b, d)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	f, err := os.Open("fixture/ngPost-raw.bin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	identical, err := Diff(f, &b)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !identical {
+		t.Error("ngPost decode output mismatch!")
+	}
+}
+
+func TestDecodeCamelsystemPowerpost(t *testing.T) {
+	var b bytes.Buffer
+	f, err := os.Open("fixture/CamelsystemPowerpost-001.ntx")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	d, err := Decode(f, DecodeWithBufferSize(200))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Printf("%#v\n", d.Header())
+
+	_, err = io.Copy(&b, d)
+	if err != nil {
+		t.Fatal(err)
+	}
+	f, err = os.Open("fixture/CamelsystemPowerpost-raw.bin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	identical, err := Diff(f, &b)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !identical {
+		t.Error("CamelsystemPowerpost decode output mismatch!")
+	}
+}
+
+func TestDecodeYEncBinPoster(t *testing.T) {
+	var b bytes.Buffer
+	f, err := os.Open("fixture/yEncBinPoster-001.ntx")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	d, err := Decode(f, DecodeWithBufferSize(200))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Printf("%#v\n", d.Header())
+
+	_, err = io.Copy(&b, d)
+	if err != nil {
+		t.Fatal(err)
+	}
+	f, err = os.Open("fixture/yEncBinPoster-raw.bin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	identical, err := Diff(f, &b)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !identical {
+		t.Error("yEncBinPoster decode output mismatch!")
+	}
+}
+
+func TestDecodeYencPowerPost(t *testing.T) {
+	var b bytes.Buffer
+	f, err := os.Open("fixture/YencPowerPost-001.ntx")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	d, err := Decode(f, DecodeWithBufferSize(200))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Printf("%#v\n", d.Header())
+
+	_, err = io.Copy(&b, d)
+	if err != nil {
+		t.Fatal(err)
+	}
+	f, err = os.Open("fixture/YencPowerPost-raw.bin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	identical, err := Diff(f, &b)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !identical {
+		t.Error("YencPowerPost decode output mismatch!")
+	}
+}
+
 // Diff compares the contents of two io.Readers.
 // The return value of identical is true if and only if there are no errors
 // in reading r1 and r2 (io.EOF excluded) and r1 and r2 are

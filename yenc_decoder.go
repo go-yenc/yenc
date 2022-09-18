@@ -49,8 +49,8 @@ func Decode(r io.Reader, options ...DecodeOption) (decoder *Decoder, err error) 
 
 func (d *Decoder) Read(b []byte) (n int, err error) {
 	var (
-		i       int
-		c       byte
+		i               int
+		c               byte
 		hasEnd, atDelim bool
 	)
 	for n < len(b) {
@@ -276,10 +276,10 @@ func (d *Decoder) consumePart() (err error) {
 // =yend keyword line is seen, now consume it.
 func (d *Decoder) consumeEnd() (err error) {
 	var (
-		crc32                   uint32
-		u64, size               uint64
-		key, value              string
-		hasSize, hasPart, atEOL bool
+		crc32          uint32
+		u64, size      uint64
+		key, value     string
+		hasSize, atEOL bool
 	)
 	crc32 = d.hash.Sum32()
 	d.b.Consume(len(yend))
@@ -315,7 +315,6 @@ func (d *Decoder) consumeEnd() (err error) {
 				err = fmt.Errorf("[yEnc] header part %d != trailer part %d: %w", d.h.Part, u64, ErrDataCorruption)
 				return
 			}
-			hasPart = true
 		} else if key == "total" {
 			if u64, err = strconv.ParseUint(value, 10, 64); err != nil {
 				err = fmt.Errorf("[yEnc] invalid trailer total value %#v: %w", value, ErrInvalidFormat)
@@ -325,7 +324,6 @@ func (d *Decoder) consumeEnd() (err error) {
 				err = fmt.Errorf("[yEnc] header total %d != trailer total %d: %w", d.h.Total, u64, ErrDataCorruption)
 				return
 			}
-			hasPart = true
 		} else if key == "pcrc32" {
 			if u64, err = strconv.ParseUint(value, 16, 32); err != nil {
 				err = fmt.Errorf("[yEnc] invalid trailer pcrc32 value %#v: %w", value, ErrInvalidFormat)
@@ -353,10 +351,6 @@ func (d *Decoder) consumeEnd() (err error) {
 	}
 	if !hasSize {
 		err = fmt.Errorf("[yEnc] no trailer size value: %w", ErrInvalidFormat)
-		return
-	}
-	if d.h.Part != 0 && !hasPart {
-		err = fmt.Errorf("[yEnc] missing trailer part value: %w", ErrInvalidFormat)
 		return
 	}
 	return
