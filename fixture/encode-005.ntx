@@ -1,0 +1,8 @@
+=ybegin part=5 total=10 line=128 size=4682 name=encode-raw.bin
+=ypart begin=2049 end=2560
+
+
+*+,-./0123456789:;<=}>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~€‚ƒ„…†‡‰‹‘’“”•–—™› ΅Ά£¤¥¦§¨
+©ª«¬­®―°±²³΄µ¶·ΈΉΊ»Ό½ΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡÒΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώÿ=@	=J=M !"#$%
+&'()
+=yend size=512 pcrc32=dbfea849

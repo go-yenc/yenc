@@ -13,14 +13,6 @@ import (
 	"gopkg.in/ringbuffer.v0"
 )
 
-// Max number of bytes per line (ends in LF and includes the LF) when decoding yEnc data stream. Default is 4096 which
-// is larger than the setting in probably all known NNTP and yEncode implementations.
-var LineMax = 4096
-
-// Max number of bytes per line (ends in LF but NOT include the LF) when encoding yEnc data stream. Default is 128 which
-// is a commonly acceptable limit for probably all known NNTP and yEncode implementations.
-var LineLimit = 128
-
 type Decoder struct {
 	h    Header
 	r    io.Reader
@@ -36,7 +28,7 @@ type Decoder struct {
 func Decode(r io.Reader, options ...DecodeOption) (decoder *Decoder, err error) {
 	d := option.New(options)
 	if d.b == nil {
-		DecodeWithBufferSize(LineMax)(d)
+		DecodeWithBufferSize(BufferLimit)(d)
 	}
 	d.r = r
 	d.hash = crc32.NewIEEE()
@@ -395,6 +387,11 @@ func (d *Decoder) CRC32() uint32 {
 
 func (d *Decoder) Header() *Header {
 	return &d.h
+}
+
+// Get the remaining bytes in the buffer consumed but not decoded.
+func (d *Decoder) Buffer() []byte {
+	return d.b.Bytes()
 }
 
 const (

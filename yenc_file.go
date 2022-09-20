@@ -12,3 +12,11 @@ type Header struct {
 	Pcrc32 *uint32 // CRC32 of the preceeding encoded part upto and includes the current part. Required for multipart.
 	Crc32  *uint32 // CRC32 of the entire encoded binary. Optional.
 }
+
+// Max number of bytes per line (ends in LF and includes the LF) when decoding yEnc data stream. Default is 4096 which
+// is larger than the setting in probably all known NNTP and yEncode implementations.
+var BufferLimit = 4096
+
+// Max number of bytes per line (ends in LF but NOT include the LF) when encoding yEnc data stream. Default is 128 which
+// is a commonly acceptable limit for probably all known NNTP and yEncode implementations.
+var LineLimit uint64 = 128
