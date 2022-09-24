@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"gopkg.in/option.v0"
-	"gopkg.in/pointer.v0"
 	"gopkg.in/ringbuffer.v0"
 )
 
@@ -321,7 +320,6 @@ func (d *Decoder) consumeEnd() (err error) {
 				err = fmt.Errorf("[yEnc] invalid trailer pcrc32 value %#v: %w", value, ErrInvalidFormat)
 				return
 			}
-			d.h.Pcrc32 = pointer.New(uint32(u64))
 			if uint32(u64) != crc32 {
 				err = fmt.Errorf("[yEnc] expect preceeding data to have CRC32 value %#08x but got %#x: %w", uint32(u64), value, ErrInvalidFormat)
 				return
@@ -331,7 +329,6 @@ func (d *Decoder) consumeEnd() (err error) {
 				err = fmt.Errorf("[yEnc] invalid trailer u64 value %#v: %w", value, ErrInvalidFormat)
 				return
 			}
-			d.h.Crc32 = pointer.New(uint32(u64))
 			if d.sizeDecoded == d.h.Size {
 				// this is the last part, validate the final CRC32 value
 				if uint32(u64) != crc32 {
