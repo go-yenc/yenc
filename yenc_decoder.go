@@ -60,7 +60,7 @@ func (d *Decoder) Read(b []byte) (n int, err error) {
 			hasEnd = true
 			break
 		}
-		if d.s == sBegin || d.s == sLineCont {
+		if d.s == sBegin || d.s == sData {
 			i, atDelim, err = d.b.ReadUntilFunc(b[n:], matchEQCRLF)
 			if atDelim {
 				i--
@@ -81,7 +81,7 @@ func (d *Decoder) Read(b []byte) (n int, err error) {
 			b[n] = d.b.CharAt(0) - 64
 			d.b.Consume(1)
 			n++
-			d.s = sLineCont
+			d.s = sData
 		}
 	}
 	if n > 0 {
@@ -217,10 +217,6 @@ func (d *Decoder) readHeader() (err error) {
 			err = fmt.Errorf("[yEnc] missing =ypart line for multipart: %w", ErrInvalidFormat)
 			return
 		}
-		if d.h.End > d.h.Size {
-			err = fmt.Errorf("[yEnc] part end %d exceeds file size %d: %w", d.h.End, d.h.Size, ErrDataCorruption)
-			return
-		}
 	}
 	return
 }
@@ -259,6 +255,10 @@ func (d *Decoder) consumePart() (err error) {
 	d.h.Begin-- // our contract is keep Begin a 0-based index
 	if d.h.End < d.h.Begin {
 		err = fmt.Errorf("[yEnc] part start %d end %d: %w", d.h.Begin, d.h.End, ErrInvalidFormat)
+		return
+	}
+	if d.h.End > d.h.Size {
+		err = fmt.Errorf("[yEnc] part end %d exceeds file size %d: %w", d.h.End, d.h.Size, ErrDataCorruption)
 		return
 	}
 	return
@@ -395,7 +395,7 @@ const (
 	sStart = iota
 	sBegin
 	sEscape
-	sLineCont
+	sData
 )
 
 var ybegin = []byte("=ybegin ")
@@ -415,11 +415,11 @@ func matchSPCRLF(c byte) bool {
 }
 
 func matchNotCRLF(c byte) bool {
-	return c != ' ' && c != '\r' && c != '\n'
+	return c != '\r' && c != '\n'
 }
 
 func matchNotEQCRLF(c byte) bool {
-	return c != ' ' && c != '\r' && c != '\n'
+	return c != '=' && c != '\r' && c != '\n'
 }
 
 type DecodeOption func(*Decoder)
