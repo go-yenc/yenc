@@ -359,19 +359,19 @@ func (d *Decoder) readArgument(readToEOL func(key string) bool) (key, value stri
 	key = string(token[:len(token)-1])
 	d.b.Consume(len(token))
 	if readToEOL != nil && readToEOL(key) {
-		if token, err = d.b.ReadBytesFunc(matchCRLF); err != nil {
+		if token, err = d.b.ReadBytesFunc(matchCRLF); err != nil && err != io.EOF {
 			err = fmt.Errorf("[yEnc] arg value too long: %w", ErrInvalidFormat)
 			return
 		}
 	} else {
-		if token, err = d.b.ReadBytesFunc(matchSPCRLF); err != nil {
+		if token, err = d.b.ReadBytesFunc(matchSPCRLF); err != nil && err != io.EOF {
 			err = fmt.Errorf("[yEnc] arg value too long: %w", ErrInvalidFormat)
 			return
 		}
 	}
 	value = string(token[:len(token)-1])
 	d.b.Consume(len(token))
-	if matchCRLF(token[len(token)-1]) {
+	if matchCRLF(token[len(token)-1]) || err == io.EOF {
 		atEOL = true
 	}
 	return

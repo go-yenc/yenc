@@ -195,3 +195,34 @@ func Diff(r1, r2 io.Reader) (identical bool, err error) {
 		}
 	}
 }
+
+func TestDecodeNyuu(t *testing.T) {
+	var b bytes.Buffer
+	f, err := os.Open("fixture/260731a73db67e8095a5eaf0b64b9d3db0117cdb@nyuu.ntx")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	d, err := Decode(f, DecodeWithBufferSize(200))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Printf("%#v\n", d.Header())
+
+	_, err = io.Copy(&b, d)
+	if err != nil {
+		t.Fatal(err)
+	}
+	f, err = os.Open("fixture/260731a73db67e8095a5eaf0b64b9d3db0117cdb-raw.bin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	identical, err := Diff(f, &b)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !identical {
+		t.Error("Nyuu decode output mismatch!")
+	}
+}
